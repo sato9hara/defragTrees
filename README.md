@@ -18,7 +18,7 @@ Preparation:
 from defragTrees import DefragModel
 
 Kmax = 10
-mdl = DefragModel(modeltype=20, maxitr=100, tol=1e-6, restart=20)
+mdl = DefragModel(modeltype='regression', maxitr=100, tol=1e-6, restart=20)
 splitter = mdl.parseRTrees('./forest/')
 mdl.fit(y, X, splitter, Kmax, fittype='FAB')
 print(mdl)
