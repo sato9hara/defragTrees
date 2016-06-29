@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: satohara
+@author: Satoshi Hara
 """
 
 #import sys

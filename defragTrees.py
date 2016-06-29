@@ -1,6 +1,49 @@
 # -*- coding: utf-8 -*-
 """
-@author: satohara
+@author: Satoshi Hara
+
+(Class)
+> DefragModel(modeltype='regression', maxitr=100, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-3, seed=0, restart=10, verbose=0)
+    modeltype   : 'regression' or 'classification'
+    maxitr      : maximum number of iterations for optimization
+    tol         : tolerance parameter to stop the iterative optimization
+    eps         : (not important) parameter for numerical stabilization
+    delta       : (not important) parameter for component truncation (valid only when fittype='FAB')
+    kappa       : (not important) tolerance parameter for checking whether eta > 1-kappa or eta < kappa
+    seed        : random seed for parameter initialization
+    restart     : number of restarts for optimization
+    verbose     : print the optimization process for every 'verbose' iteration when 'verbose >= 1'
+
+(Methods)
+> DEfragModel.fit(y, X, splitter, K, fittype='EM', featurename=[])
+    y           : numpy array of size num (training data)
+    X           : numpy array of size num x dim (training data)
+    splitter    : numpy array of pairs (dimension, threshold)
+    K           : number of rules (upper-bound when fittype='FAB')
+    fittyep     : 'EM' or 'FAB'
+    featurename : name of features
+    
+> DefragModel.predict(X)
+    X           : numpy array of size num x dim
+  [return]
+    y           : predicted value of size num x (# of rules + 1)
+    
+> DefragModel.evaluate(y, X)
+    y           : numpy array of size num (test data)
+    X           : numpy array of size num x dim (test data)
+  [return]
+    score       : prediction error
+    coverage    : coverage of rules
+    
+> DefragModel.parseXGBtrees(filename)
+    filename    : file name of XGB tree information
+  [return]
+    splitter    : numpy array of pairs (dimension, threshold)
+    
+> DefragModel.parseRtrees(dirname)
+    dirname     : directory name of R random forest information
+  [return]
+    splitter    : numpy array of pairs (dimension, threshold)
 """
 
 import numpy as np
