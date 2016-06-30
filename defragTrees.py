@@ -15,12 +15,12 @@
     verbose     : print the optimization process for every 'verbose' iteration when 'verbose >= 1'
 
 (Methods)
-> DEfragModel.fit(y, X, splitter, K, fittype='EM', featurename=[])
+> DEfragModel.fit(y, X, splitter, K, fittype='FAB', featurename=[])
     y           : numpy array of size num (training data)
     X           : numpy array of size num x dim (training data)
     splitter    : numpy array of pairs (dimension, threshold)
     K           : number of rules (upper-bound when fittype='FAB')
-    fittyep     : 'EM' or 'FAB'
+    fittyep     : 'FAB' or 'EM'
     featurename : name of features
     
 > DefragModel.predict(X)
@@ -38,12 +38,12 @@
 > DefragModel.parseXGBtrees(filename)
     filename    : file name of XGB tree information
   [return]
-    splitter    : numpy array of pairs (dimension, threshold)
+    splitter    : numpy array of pairs (feature index, threshold)
     
 > DefragModel.parseRtrees(dirname)
     dirname     : directory name of R random forest information
   [return]
-    splitter    : numpy array of pairs (dimension, threshold)
+    splitter    : numpy array of pairs (feature index, threshold)
 """
 
 import numpy as np
@@ -226,7 +226,7 @@ class DefragModel(RuleModel):
     #************************
     # Fit and Related Methods
     #************************
-    def fit(self, y, X, splitter, K, fittype='EM', featurename=[]):
+    def fit(self, y, X, splitter, K, fittype='FAB', featurename=[]):
         self.dim_ = X.shape[1]
         self.setfeaturename(featurename)
         self.setdefaultpred(y)

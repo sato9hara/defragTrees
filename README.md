@@ -8,14 +8,14 @@ Python3.x, Numpy, Pandas, Scikit-learn
 
 [For demo_R] R, randomForest, inTrees
 
-## How to Use
+## Usage
 
 Prepare data:
 
 * Input ``X``: feature matrix, numpy array of size (num, dim).
 * Output ``y``: output array, numpy array of size (num,).
 * Splitter ``splitter``: thresholds of tree ensembles, numpy array of size (# of split rules, 2).
-  * Each row of ``splitter`` is (feature index, threshold). If the split rule is $x_1 < 0.5$, the row of ``splitter`` is (1, 0.5).
+  * Each row of ``splitter`` is (feature index, threshold). Suppose the split rule is ``second feature < 0.5``, the row of ``splitter`` is then (1, 0.5).
 
 Import the class:
 
@@ -27,15 +27,24 @@ Fit the simplified model:
 
 
 ```python
-Kmax = 10 # (uppder-bound) number of rules to be fitted
+Kmax = 10 # uppder-bound number of rules to be fitted
 mdl = DefragModel(modeltype='regression') # change to 'classification' if necessary.
-mdl.fit(y, X, splitter, Kmax, fittype='FAB')
+mdl.fit(y, X, splitter, Kmax)
+#mdl.fit(y, X, splitter, Kmax, fittype='EM') # use this when one wants exactly Kmax rules to be fitted
 ```
 
 Check the learned rules:
 
 ```python
 print(mdl)
+```
+
+For further deitals, see ``defragTrees.py``.
+In ipython, one check:
+
+```python
+import defragTrees
+defragTrees?
 ```
 
 ## Examples
