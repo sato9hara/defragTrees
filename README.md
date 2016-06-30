@@ -40,7 +40,7 @@ print(mdl)
 ```
 
 For further deitals, see ``defragTrees.py``.
-In ipython, one check:
+In IPython, one check:
 
 ```python
 import defragTrees
@@ -124,7 +124,7 @@ bst.dump_model('xgbmodel.txt')
 # fit simplified model
 Kmax = 10
 mdl = DefragModel(modeltype='regression', maxitr=100, tol=1e-6, restart=20, verbose=0)
-splitter = mdl.parseXGBtrees('./xgbmodel.txt') # parse XGB model into the array of (dimension, threshold)
+splitter = mdl.parseXGBtrees('./xgbmodel.txt') # parse XGB model into the array of (feature index, threshold)
 mdl.fit(ytr, Xtr, splitter, Kmax, fittype='FAB')
 
 # results
