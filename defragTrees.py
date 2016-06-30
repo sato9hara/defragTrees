@@ -77,9 +77,9 @@ class RuleModel(object):
         for i in range(len(self.rule_)):
             s += '[Rule %2d]\n' % (i+1,)
             if self.modeltype_ == 'regression':
-                s += 'z = %f when\n' % (self.pred_[i],)
+                s += 'y = %f when\n' % (self.pred_[i],)
             elif self.modeltype_ == 'classification':
-                s += 'z = %d when\n' % (self.pred_[i],)
+                s += 'y = %d when\n' % (self.pred_[i],)
             box, vmin, vmax = self.__r2box(self.rule_[i], self.dim_)
             for d in range(box.shape[1]):
                 if box[0, d] == vmin[d] and box[1, d] == vmax[d]:
@@ -93,9 +93,9 @@ class RuleModel(object):
             s += '\n'
         s += '[Otherwise]\n'
         if self.modeltype_ == 'regression':
-            s += 'z = %f\n' % (self.pred_default_,)
+            s += 'y = %f\n' % (self.pred_default_,)
         elif self.modeltype_ == 'classification':
-            s += 'z = %d\n' % (self.pred_default_,)
+            s += 'y = %d\n' % (self.pred_default_,)
         return s
     
     #************************
