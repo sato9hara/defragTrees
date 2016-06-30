@@ -17,7 +17,7 @@ seed = 0
 ratio = 0.5
 
 # data
-df = pd.read_csv('../data/energy.csv', sep=',', header=None)
+df = pd.read_csv('./data/energy.csv', sep=',', header=None)
 df = df.drop([9, 10, 11], 1)
 
 # split

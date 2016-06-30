@@ -18,7 +18,7 @@ m1 = 10000
 m2 = m1 + 10000
 
 # data
-df = pd.read_csv('../data/HIGGS.csv', sep=',', header=None)
+df = pd.read_csv('./data/HIGGS.csv', sep=',', header=None)
 cols = df.columns.tolist()
 cols = cols[1:] + cols[:1]
 df = df[cols]
