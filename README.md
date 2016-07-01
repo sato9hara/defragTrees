@@ -4,9 +4,16 @@ Python code for tree ensemble interpretation proposed in the following paper.
 * S. Hara, K. Hayashi, [Making Tree Ensembles Interpretable: A Bayesian Model Selection Approach](http://arxiv.org/abs/1606.09066), arXiv:1606.09066, 2016.
 
 ## Requirements
-Python3.x, Numpy, Pandas, Scikit-learn
+To use defragTrees:
 
-[For demo_R] R, randomForest, inTrees
+* Python3.x
+* Numpy
+* Pandas
+
+To replicate paper results:
+
+* Python: Scikit-learn
+* R: randomForest, inTrees
 
 ## Usage
 
@@ -51,12 +58,12 @@ defragTrees?
 
 ### Example 1 - Replicating Paper Results
 
-In demo_R directory:
+In ``paper`` directory:
 
 ```
-python demo_synthetic.py > synthetic.txt
-python demo_energy.py > energy.txt
-python demo_higgs.py > higgs.txt
+python paper_synthetic.py > synthetic.txt
+python paper_energy.py > energy.txt
+python paper_higgs.py > higgs.txt
 ```
 
 ### Example 2 - Interpreting [XGBoost](http://xgboost.readthedocs.io/en/latest/python/python_intro.html) Model
