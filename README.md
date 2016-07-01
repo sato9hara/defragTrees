@@ -17,7 +17,7 @@ To replicate paper results in ``paper`` directory:
 
 To run example codes in ``example`` directory:
 
-* Python: xgboost
+* Python: xgboost, Scikit-learn
 * R: randomForest
 
 ## Usage
@@ -183,7 +183,7 @@ y = 0.997496 when
 y = 0.512809
 ```
 
-### Example 4 - Interpreting Scikit-Learn Model
+### Example 4 - Interpreting Scikit-learn Model
 
 In ``example`` directory:
 
