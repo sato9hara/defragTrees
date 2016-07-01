@@ -9,12 +9,10 @@ To use defragTrees:
 * Python3.x
 * Numpy
 * Pandas
-* Pylab
-* Matplotlib
 
 To replicate paper results:
 
-* Python: Scikit-learn
+* Python: Scikit-learn, Matplotlib, pylab
 * R: randomForest, inTrees
 
 ## Usage

@@ -50,13 +50,6 @@ import numpy as np
 import pandas as pd
 import glob
 
-import pylab as pl
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colorbar as colorbar
-
 #************************
 # Default Class
 #************************
@@ -167,42 +160,7 @@ class RuleModel(object):
             w = np.argmax(w)
             self.pred_default_ = w
     
-    def plotRule(self, X, d1, d2, alpha=0.8, filename='', rnum=-1):
-        cmap = cm.get_cmap('cool')
-        fig, (ax1, ax2) = plt.subplots(1, 2, gridspec_kw = {'width_ratios':[19, 1]})
-        if rnum <= 0:
-            rnum = len(self.rule_)
-        else:
-            rnum = min(len(self.rule_), rnum)
-        for i in range(rnum):
-            r = self.rule_[i]
-            box, vmin, vmax = self.__r2boxWithX(r, X)
-            if self.modeltype_ == 'regression':
-                c = cmap(self.pred_[i])
-            elif self.modeltype_ == 'classification':
-                r = self.pred_[i] / (np.unique(self.pred_).size - 1)
-                c = cmap(r)
-            ax1.add_patch(pl.Rectangle(xy=[box[0, d1], box[0, d2]], width=(box[1, d1] - box[0, d1]), height=(box[1, d2] - box[0, d2]), facecolor=c, linewidth='2.0', alpha=alpha))
-        ax1.set_xlabel('x1', size=22)
-        ax1.set_ylabel('x2', size=22)
-        ax1.set_title('Simplified Model (K = %d)' % (rnum,), size=28)
-        colorbar.ColorbarBase(ax2, cmap=cmap, format='%.1f')
-        ax2.set_ylabel('Predictor z', size=22)
-        plt.show()
-        if not filename == '':
-            plt.savefig(filename, format="pdf", bbox_inches="tight")
-            plt.close()
-    
-    def __r2boxWithX(self, r, X):
-        vmin = np.min(X, axis=0)
-        vmax = np.max(X, axis=0)
-        box = np.c_[vmin, vmax].T
-        for rr in r:
-            if rr[1] == 0:
-                box[1, rr[0]-1] = np.minimum(box[1, rr[0]-1], rr[2])
-            else:
-                box[0, rr[0]-1] = np.maximum(box[0, rr[0]-1], rr[2])
-        return box, vmin, vmax
+
     
     
 #************************

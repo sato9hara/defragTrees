@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 
 from defragTrees import DefragModel
 from inTrees import inTreeModel, DTreeModel
+import inTrees
 
 def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regression', plot=False, compare=False, treenum=10, maxitr=100, tol=1e-6):
     
@@ -73,7 +74,7 @@ def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regres
     print('Test Coverage = %f' % (cover,))
     print()
     if plot:
-        mdl.plotRule(Xte, 0, 1, filename='%s/%s_defrag.pdf' % (dirname, prefix))
+        inTrees.plotRule(mdl, Xte, 0, 1, filename='%s/%s_defrag.pdf' % (dirname, prefix))
     else:
         print('----- Found Rules -----')
         print(mdl)
@@ -90,7 +91,7 @@ def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regres
     print('Test Coverage = %f' % (cover,))
     print()
     if plot:
-        mdl2.plotRule(Xte, 0, 1, filename='%s/%s_inTrees.pdf' % (dirname, prefix), rnum=10)
+        inTrees.plotRule(mdl2, Xte, 0, 1, filename='%s/%s_inTrees.pdf' % (dirname, prefix), rnum=10)
     else:
         print('----- Found Rules -----')
         print(mdl2)
@@ -107,7 +108,7 @@ def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regres
     print('Test Coverage = %f' % (cover,))
     print()
     if plot:
-        mdl3.plotRule(Xte, 0, 1, filename='%s/%s_DTree.pdf' % (dirname, prefix))
+        inTrees.plotRule(mdl3, Xte, 0, 1, filename='%s/%s_DTree.pdf' % (dirname, prefix))
     else:
         print('----- Found Rules -----')
         print(mdl3)
