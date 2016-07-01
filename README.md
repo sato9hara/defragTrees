@@ -84,7 +84,7 @@ python example_xgb.py
 
 When interepreting XGBoost model, use ``parseXGBtrees`` of ``DefragModel`` to get ``splitter``:
 
-```
+```python
 bst.dump_model('xgbmodel.txt') # save XGBoost model as text
 splitter = DefragModel.parseXGBtrees('./xgbmodel.txt') # parse XGB model into the array of (feature index, threshold)
 ```
@@ -134,7 +134,7 @@ When interepreting R randomForest model, use ``parseRtrees`` of ``DefragModel`` 
 
 * In R, save trees into the ``./forest/`` directory. (Remark: The directory has to include only tree text files but not other files.)
 
-```
+```R
 ntree = 10
 rf <- randomForest(X, y, ntree=ntree) # fit random forest
 for (t in 1:ntree) {
@@ -145,7 +145,7 @@ for (t in 1:ntree) {
 
 * In Python, use ``parseRtrees`` to get ``splitter`` from the directory ``./forest/``.
 
-```
+```python
 splitter = DefragModel.parseRtrees('./forest/') # parse R trees in ./forest/ into the array of (feature index, threshold)
 ```
 
@@ -195,7 +195,7 @@ python example_sklearn.py
 When interepreting Scikit-learn tree ensembles, use ``parseSLtrees`` of ``DefragModel`` to get ``splitter``:
 
 
-```
+```python
 forest = GradientBoostingRegressor(min_samples_leaf=10)
 #forest = RandomForestRegressor(min_samples_leaf=10)
 #forest = ExtraTreesRegressor(min_samples_leaf=10)
