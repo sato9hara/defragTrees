@@ -16,7 +16,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from defragTrees import DefragModel, inTreeModel, DTreeModel
+from defragTrees import DefragModel
+from inTrees import inTreeModel, DTreeModel
 
 def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regression', plot=False, compare=False, treenum=10, maxitr=100, tol=1e-6):
     

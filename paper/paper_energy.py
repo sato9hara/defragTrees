@@ -9,7 +9,7 @@ sys.path.append('../')
 import os
 import numpy as np
 import pandas as pd
-import demo_R
+import paper_sub
 
 # setting
 prefix = 'energy'
@@ -42,5 +42,5 @@ Kmax = 10
 restart = 20
 M = range(1, 16)
 featurename = ('Relative Compactness', 'Surface Area', 'Wall Area', 'Roof Area', 'Overall Height', 'Orientation', 'Glazing Area', 'Glazing Area Distribution')
-demo_R.run(prefix, Kmax, restart, featurename=featurename, plot=False)
-#demo_R.run(prefix, Kmax, restart, featurename=featurename, plot=False, M=M, compare=True)
+paper_sub.run(prefix, Kmax, restart, featurename=featurename, plot=False)
+#paper_sub.run(prefix, Kmax, restart, featurename=featurename, plot=False, M=M, compare=True)

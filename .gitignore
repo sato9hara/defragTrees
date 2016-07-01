@@ -1,2 +1,4 @@
 
-demo_R/.Rapp.history
+*.pyc
+
+*.csv

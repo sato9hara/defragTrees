@@ -8,7 +8,7 @@
 
 import os
 import numpy as np
-import demo_R
+import paper_sub
 
 # setting
 prefix = 'synthetic'
@@ -48,5 +48,5 @@ np.savetxt(tefile, np.c_[Xte, yte], delimiter=',')
 Kmax = 10
 restart = 20
 M = range(1, 16)
-demo_R.run(prefix, Kmax, restart, plot=True)
-#demo_R.run(prefix, Kmax, restart, plot=True, M=M, compare=True)
+paper_sub.run(prefix, Kmax, restart, plot=True)
+#paper_sub.run(prefix, Kmax, restart, plot=True, M=M, compare=True)

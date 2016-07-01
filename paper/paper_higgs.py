@@ -9,7 +9,7 @@ sys.path.append('../')
 import os
 import numpy as np
 import pandas as pd
-import demo_R
+import paper_sub
 
 # setting
 prefix = 'higgs'
@@ -43,5 +43,5 @@ df2.to_csv(tefile, header=None, index=False)
 Kmax = 10
 restart = 20
 M = range(1, 16)
-demo_R.run(prefix, Kmax, restart, modeltype='classification', plot=False, treenum=30, maxitr=3000, tol=1)
-#demo_R.run(prefix, Kmax, restart, modeltype='classification', plot=False, treenum=30, maxitr=3000, tol=1, M=M, compare=True)
+paper_sub.run(prefix, Kmax, restart, modeltype='classification', plot=False, treenum=30, maxitr=3000, tol=1)
+#paper_sub.run(prefix, Kmax, restart, modeltype='classification', plot=False, treenum=30, maxitr=3000, tol=1, M=M, compare=True)
