@@ -17,6 +17,7 @@ To replicate paper results in ``paper`` directory:
 
 To run example codes in ``example`` directory:
 
+* Python: xgboost
 * R: randomForest
 
 ## Usage
