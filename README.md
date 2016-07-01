@@ -9,6 +9,8 @@ To use defragTrees:
 * Python3.x
 * Numpy
 * Pandas
+* Pylab
+* Matplotlib
 
 To replicate paper results:
 
@@ -47,7 +49,7 @@ print(mdl)
 ```
 
 For further deitals, see ``defragTrees.py``.
-In IPython, one check:
+In IPython, one can check:
 
 ```python
 import defragTrees
