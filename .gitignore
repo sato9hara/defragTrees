@@ -1,6 +1,3 @@
-
-*.pyc
-
 *.csv
 
-example/.Rapp.history
+/paper/results/
