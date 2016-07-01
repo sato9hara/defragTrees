@@ -160,8 +160,23 @@ class RuleModel(object):
             w = np.argmax(w)
             self.pred_default_ = w
     
-
-    
+    def printInLatex(self):
+        for i in range(len(self.rule_)):
+            if self.modeltype_ == 'regression':
+                print('& $%.2f$ &' % (self.pred_[i],), end='')
+            elif self.modeltype_ == 'classification':
+                print('& $%d$ &' % (self.pred_[i],), end='')
+            box, vmin, vmax = self.__r2box(self.rule_[i], self.dim_)
+            for d in range(box.shape[1]):
+                if box[0, d] == vmin[d] and box[1, d] == vmax[d]:
+                    pass
+                elif box[0, d] > vmin[d] and box[1, d] < vmax[d]:
+                    print('$%.2f \leq %s < %.2f$, ' % (box[0, d], self.featurename_[d], box[1, d]), end='')
+                elif box[0, d] == vmin[d]:
+                    print('$%s < %.2f$, ' % (self.featurename_[d], box[1, d]), end='')
+                elif box[1, d] == vmax[d]:
+                    print('$%s \geq %.2f$, ' % (self.featurename_[d], box[0, d]), end='')
+            print()
     
 #************************
 # Defrag Class

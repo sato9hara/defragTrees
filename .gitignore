@@ -1,3 +1,7 @@
 *.csv
 
 /paper/results/
+
+/__pycache__
+
+/paper/__pycache__

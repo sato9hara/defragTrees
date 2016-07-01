@@ -26,6 +26,8 @@ Prepare data:
 
 * Input ``X``: feature matrix, numpy array of size (num, dim).
 * Output ``y``: output array, numpy array of size (num,).
+  * For regression, ``y`` is real value.
+  * For classification, ``y`` is class index (i.e., 0, 1, 2, ..., C-1, for C classes).
 * Splitter ``splitter``: thresholds of tree ensembles, numpy array of size (# of split rules, 2).
   * Each row of ``splitter`` is (feature index, threshold). Suppose the split rule is ``second feature < 0.5``, the row of ``splitter`` is then (1, 0.5).
 

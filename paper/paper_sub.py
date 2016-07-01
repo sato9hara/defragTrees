@@ -99,7 +99,7 @@ def run(prefix, Kmax, restart, M=range(1, 16), featurename=[], modeltype='regres
     # Decision Tree Result
     mdl3 = DTreeModel(modeltype=modeltype)
     mdl3.fit(ytr, Xtr, featurename=featurename)
-    joblib.dump(mdl, '%s/%s_DTree.mdl' % (dirname, prefix), compress=9)
+    joblib.dump(mdl3, '%s/%s_DTree.mdl' % (dirname, prefix), compress=9)
     score, cover = mdl3.evaluate(yte, Xte)
     print()
     print('<< Decision Tree >>')
