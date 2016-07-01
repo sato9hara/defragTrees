@@ -557,4 +557,22 @@ class DefragModel(RuleModel):
         idx = np.r_[True, np.any(B[1:]!=B[:-1], axis=tuple(range(1,X.ndim)))]
         Z = B[idx]
         return Z
+    
+    @staticmethod
+    def parseSLtrees(mdl):
+        splitter = np.zeros((1, 2))
+        for tree in mdl.estimators_:
+            if type(tree) == np.ndarray:
+                subsplitter = DefragModel.__parseSLTree(tree[0])
+            else:
+                subsplitter = DefragModel.__parseSLTree(tree)
+            splitter = np.r_[splitter, subsplitter]
+        return splitter[1:, :]
+        
+    @staticmethod
+    def __parseSLTree(tree):
+        left = tree.tree_.children_left
+        feature = tree.tree_.feature[left >= 0]
+        threshold = tree.tree_.threshold[left >= 0]
+        return np.c_[feature, threshold]
         

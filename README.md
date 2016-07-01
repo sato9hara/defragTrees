@@ -182,3 +182,67 @@ y = 0.997496 when
 [Otherwise]
 y = 0.512809
 ```
+
+### Example 4 - Interpreting Scikit-Learn Model
+
+In ``example`` directory:
+
+```
+python example_data.py
+python example_sklearn.py
+```
+
+When interepreting Scikit-learn tree ensembles, use ``parseSLtrees`` of ``DefragModel`` to get ``splitter``:
+
+
+```
+forest = GradientBoostingRegressor(min_samples_leaf=10)
+#forest = RandomForestRegressor(min_samples_leaf=10)
+#forest = ExtraTreesRegressor(min_samples_leaf=10)
+#forest = AdaBoostRegressor()
+forest.fit(X, y)
+splitter = DefragModel.parseSLtrees(forest) # parse sklearn tree ensembles into the array of (feature index, threshold)
+```
+
+
+The result of ``python example_sklearn.py`` would be someting like this:
+
+
+```
+<< defragTrees >>
+----- Evaluated Results -----
+Test Error = 0.012797
+Test Coverage = 0.993000
+
+----- Found Rules -----
+[Rule  1]
+y = -0.004994 when
+         x_1 >= 0.501874
+         x_2 >= 0.501204
+
+[Rule  2]
+y = 0.007650 when
+         0.221089 <= x_1 < 0.497388
+         0.013755 <= x_2 < 0.497672
+
+[Rule  3]
+y = 0.009781 when
+         x_1 < 0.337727
+         x_2 < 0.500619
+
+[Rule  4]
+y = 0.991090 when
+         x_1 >= 0.504610
+         x_2 < 0.499463
+
+[Rule  5]
+y = 0.997496 when
+         x_1 < 0.500264
+         x_2 >= 0.501204
+
+[Otherwise]
+y = 0.512809
+```
+
+
+
