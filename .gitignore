@@ -1,6 +1,7 @@
 *.csv
 *.txt
 *.data
+*.pyc
 
 /paper/result/
 
