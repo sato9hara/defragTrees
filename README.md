@@ -10,15 +10,15 @@ To use defragTrees:
 * Numpy
 * Pandas
 
-To replicate paper results in ``paper`` directory:
-
-* Python: Scikit-learn, Matplotlib, pylab
-* R: randomForest, inTrees, nodeHarvest
-
 To run example codes in ``example`` directory:
 
 * Python: XGBoost, Scikit-learn
 * R: randomForest
+
+To replicate paper results in ``paper`` directory:
+
+* Python: Scikit-learn, Matplotlib, pylab
+* R: randomForest, inTrees, nodeHarvest
 
 ## Usage
 
