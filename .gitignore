@@ -1,10 +1,11 @@
 *.csv
+*.txt
+*.data
 
 /paper/result/
 
 /__pycache__
 
 /example/forest
-/example/*.txt
 
 /paper/__pycache__
