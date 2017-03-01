@@ -4,4 +4,7 @@
 
 /__pycache__
 
+/example/forest
+/example/*.txt
+
 /paper/__pycache__
