@@ -4,6 +4,8 @@
 
 /paper/result/
 
+/__pycache__/
 */__pycache__/
+*/*/__pycache__/
 
 /example/forest
