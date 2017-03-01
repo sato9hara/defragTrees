@@ -4,7 +4,6 @@
 
 /paper/result/
 
-/__pycache__
-/paper/baselines/__pycache__
+*/__pycache__/
 
 /example/forest
