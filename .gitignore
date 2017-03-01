@@ -1,6 +1,6 @@
 *.csv
 
-/paper/results/
+/paper/result/
 
 /__pycache__
 
