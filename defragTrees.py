@@ -6,6 +6,7 @@
 > DefragModel(modeltype='regression', maxitr=100, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, verbose=0, njobs=1):
     modeltype   : 'regression' or 'classification'
     maxitr      : maximum number of iterations for optimization
+    qitr        : for the first qitr iterations, the E-step update is not exact, to avoid overshrinking
     tol         : tolerance parameter to stop the iterative optimization
     eps         : (not important) parameter for numerical stabilization
     delta       : (not important) parameter for component truncation (valid only when fittype='FAB')
@@ -230,9 +231,10 @@ class RuleModel(object):
 # Defrag Class
 #************************
 class DefragModel(RuleModel):
-    def __init__(self, modeltype='regression', maxitr=100, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, verbose=0, njobs=1):
+    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, verbose=0, njobs=1):
         super().__init__(modeltype=modeltype)
         self.maxitr_ = maxitr
+        self.qitr_ = qitr
         self.tol_ = tol
         self.eps_ = eps
         self.delta_ = delta
@@ -254,13 +256,13 @@ class DefragModel(RuleModel):
         self.defragger_ = []
         if self.njobs_ == 1:
             for itr in range(self.restart_):
-                defr = self.fit_defragger(X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_)
+                defr = self.fit_defragger(X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_)
                 self.defragger_.append(defr)
         elif self.njobs_ > 1:
             pool = Pool(processes = self.njobs_)
             args = []
             for itr in range(self.restart_):
-                args.append((self.fit_defragger, X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_))
+                args.append((self.fit_defragger, X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_))
             self.defragger_ = pool.map(argwrapper, args)
             pool.close()
             pool.join()
@@ -276,8 +278,8 @@ class DefragModel(RuleModel):
         self.pred_ = pred
         self.weight_ = self.opt_defragger_.A_
     
-    def fit_defragger(self, X, y, splitter, K, fittype, modeltype, maxitr, tol, eps, delta, seed, verbose):
-        defragger = Defragger(modeltype=modeltype, maxitr=maxitr, tol=tol, eps=eps, delta=delta, seed=seed, verbose=verbose)
+    def fit_defragger(self, X, y, splitter, K, fittype, modeltype, maxitr, qitr, tol, eps, delta, seed, verbose):
+        defragger = Defragger(modeltype=modeltype, maxitr=maxitr, qitr=qitr, tol=tol, eps=eps, delta=delta, seed=seed, verbose=verbose)
         defragger.fit(X, y, splitter, K, fittype=fittype)
         return defragger
     
@@ -427,9 +429,10 @@ class DefragModel(RuleModel):
 
 
 class Defragger(object):
-    def __init__(self, modeltype='regression', maxitr=100, tol=1e-6, eps=1e-10, delta=1e-8, seed=0, verbose=0):
+    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, seed=0, verbose=0):
         self.modeltype_ = modeltype
         self.maxitr_ = maxitr
+        self.qitr_ = qitr
         self.tol_ = tol
         self.eps_ = eps
         self.delta_ = delta
@@ -559,7 +562,7 @@ class Defragger(object):
         f = self.__objFAB(y, R, Q, h, E, A, K, eps=self.eps_, modeltype=self.modeltype_)
         for itr in range(self.maxitr_):
             Qnew = Q.copy()
-            if itr < 5:
+            if itr < self.qitr_:
                 Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, modeltype=self.modeltype_, maxitr=2)
             else:
                 Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, modeltype=self.modeltype_, maxitr=10)

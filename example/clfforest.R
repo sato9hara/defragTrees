@@ -1,7 +1,7 @@
 # data
 Z <- read.csv('train.csv', header=F)
 X <- Z[,1:(ncol(Z)-1)]
-y <- Z[,ncol(Z)]
+y <- as.factor(Z[,ncol(Z)])
 
 # random forest training
 library(randomForest)

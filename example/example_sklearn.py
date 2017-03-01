@@ -7,7 +7,7 @@ import sys
 sys.path.append('../')
 
 import numpy as np
-from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor, AdaBoostRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, AdaBoostClassifier, GradientBoostingClassifier
 from defragTrees import DefragModel
 
 # load data
@@ -19,25 +19,26 @@ Xte = Zte[:, :-1]
 yte = Zte[:, -1]
 
 # train tree ensemble
-forest = GradientBoostingRegressor(min_samples_leaf=10)
-#forest = RandomForestRegressor(min_samples_leaf=10)
-#forest = ExtraTreesRegressor(min_samples_leaf=10)
-#forest = AdaBoostRegressor()
+forest = GradientBoostingClassifier(min_samples_leaf=10)
+#forest = RandomForestClassifier(min_samples_leaf=10)
+#forest = ExtraTreesClassifier(min_samples_leaf=10)
+#forest = AdaBoostClassifier()
 forest.fit(Xtr, ytr)
 
 # fit simplified model
 Kmax = 10
 splitter = DefragModel.parseSLtrees(forest) # parse sklearn tree ensembles into the array of (feature index, threshold)
-mdl = DefragModel(modeltype='regression', maxitr=100, tol=1e-6, restart=20, verbose=0)
-mdl.fit(ytr, Xtr, splitter, Kmax, fittype='FAB')
+mdl = DefragModel(modeltype='classification', maxitr=100, qitr=0, tol=1e-6, restart=20, verbose=0)
+mdl.fit(Xtr, ytr, splitter, Kmax, fittype='FAB')
 
 # results
-score, cover = mdl.evaluate(yte, Xte)
+score, cover, coll = mdl.evaluate(Xte, yte)
 print()
 print('<< defragTrees >>')
 print('----- Evaluated Results -----')
 print('Test Error = %f' % (score,))
 print('Test Coverage = %f' % (cover,))
+print('Overlap = %f' % (coll,))
 print()
 print('----- Found Rules -----')
 print(mdl)
