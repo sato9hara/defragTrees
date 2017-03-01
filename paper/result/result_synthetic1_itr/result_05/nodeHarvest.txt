@@ -1,0 +1,227 @@
+[[1]]
+     variable lower upper
+[1,]        1  -Inf 0.410
+[2,]        2  -Inf 0.501
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 192
+attr(,"mean")
+[1] 0.109375
+attr(,"predict")
+[1] 0.109375
+attr(,"weight")
+[1] 0.1084619
+attr(,"ancestors")
+[1]  2  9 13
+
+[[2]]
+     variable lower upper
+[1,]        1  -Inf 0.426
+[2,]        2  -Inf 0.501
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 205
+attr(,"mean")
+[1] 0.1121951
+attr(,"predict")
+[1] 0.1121951
+attr(,"weight")
+[1] 0.2715885
+attr(,"ancestors")
+[1]  9 13
+
+[[3]]
+     variable lower upper
+[1,]        1  -Inf 0.418
+[2,]        2 0.501   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 217
+attr(,"mean")
+[1] 0.9124424
+attr(,"predict")
+[1] 0.9124424
+attr(,"weight")
+[1] 0.1084619
+attr(,"ancestors")
+[1]  4 13
+
+[[4]]
+     variable lower upper
+[1,]        1  -Inf 0.426
+[2,]        2 0.501   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 222
+attr(,"mean")
+[1] 0.9099099
+attr(,"predict")
+[1] 0.9099099
+attr(,"weight")
+[1] 0.2715885
+attr(,"ancestors")
+[1] 13
+
+[[5]]
+     variable lower upper
+[1,]        2 0.543   Inf
+[2,]        1  -Inf   0.5
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 233
+attr(,"mean")
+[1] 0.9141631
+attr(,"predict")
+[1] 0.9141631
+attr(,"weight")
+[1] 0.6099512
+attr(,"ancestors")
+[1] 13
+
+[[6]]
+     variable lower upper
+[1,]        2 0.543   Inf
+[2,]        1 0.500   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 245
+attr(,"mean")
+[1] 0.1183673
+attr(,"predict")
+[1] 0.1183673
+attr(,"weight")
+[1] 0.6099512
+attr(,"ancestors")
+[1] 11 12 13
+
+[[7]]
+     variable lower upper
+[1,]        2  -Inf 0.543
+[2,]        1 0.501   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 250
+attr(,"mean")
+[1] 0.784
+attr(,"predict")
+[1] 0.784
+attr(,"weight")
+[1] 0.6099512
+attr(,"ancestors")
+[1] 13
+
+[[8]]
+     variable lower upper
+[1,]        1 0.426   Inf
+[2,]        2  -Inf 0.508
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 264
+attr(,"mean")
+[1] 0.75
+attr(,"predict")
+[1] 0.75
+attr(,"weight")
+[1] 0.2715885
+attr(,"ancestors")
+[1] 13
+
+[[9]]
+     variable lower upper
+[1,]        2  -Inf 0.543
+[2,]        1  -Inf 0.501
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 272
+attr(,"mean")
+[1] 0.1580882
+attr(,"predict")
+[1] 0.1580882
+attr(,"weight")
+[1] 0.6099512
+attr(,"ancestors")
+[1] 13
+
+[[10]]
+     variable lower upper
+[1,]        1  0.41   Inf
+[2,]        2  -Inf 0.501
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 275
+attr(,"mean")
+[1] 0.7272727
+attr(,"predict")
+[1] 0.7272727
+attr(,"weight")
+[1] 0.1084619
+attr(,"ancestors")
+[1] 13
+
+[[11]]
+     variable lower upper
+[1,]        1 0.426   Inf
+[2,]        2 0.508   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 309
+attr(,"mean")
+[1] 0.1877023
+attr(,"predict")
+[1] 0.1877023
+attr(,"weight")
+[1] 0.2715885
+attr(,"ancestors")
+[1] 12 13
+
+[[12]]
+     variable lower upper
+[1,]        1 0.420   Inf
+[2,]        2 0.501   Inf
+attr(,"depth")
+[1] 2
+attr(,"n")
+[1] 316
+attr(,"mean")
+[1] 0.1962025
+attr(,"predict")
+[1] 0.1962025
+attr(,"weight")
+[1] 0.1084619
+attr(,"ancestors")
+[1] 13
+
+[[13]]
+     variable lower upper
+[1,]        1  -Inf   Inf
+attr(,"n")
+[1] 1000
+attr(,"mean")
+[1] 0.481
+attr(,"depth")
+[1] 0
+attr(,"predict")
+[1] 0.481
+attr(,"weight")
+[1] 0.00999999
+attr(,"ancestors")
+integer(0)
+
+attr(,"levelvec")
+attr(,"levelvec")[[1]]
+numeric(0)
+
+attr(,"levelvec")[[2]]
+numeric(0)
+
