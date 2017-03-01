@@ -1,5 +1,15 @@
 # Replicating Paper Results
 
+## Requirements
+
+* Python3.x
+* Numpy
+* Pandas
+* Scikit-learn
+* Matplotlib
+* pylab
+* R: randomForest, inTrees, nodeHarvest
+
 ## Preparation
 
 * Download data files from [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/).

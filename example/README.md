@@ -1,5 +1,14 @@
 # Examples
 
+## Requirements
+
+* Python3.x
+* Numpy
+* Pandas
+* XGBoost
+* Scikit-learn
+* R: randomForest
+
 ## Example 1 - Interpreting [XGBoost](http://xgboost.readthedocs.io/en/latest/python/python_intro.html) Model
 
 In this directory:
