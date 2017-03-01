@@ -5,7 +5,7 @@
 /paper/result/
 
 /__pycache__/
-*/__pycache__/
-*/*/__pycache__/
+/paper/__pycache__/
+/paper/baselines/__pycache__/
 
 /example/forest
