@@ -22,7 +22,7 @@ Recommended to run on a proper machine.
 
 ```
 python ./tests/paper_synthetic1.py > result_synthetic1.txt
-python ./tests/paper_synthetic2.py > result_synthetic1.txt
+python ./tests/paper_synthetic2.py > result_synthetic2.txt
 python ./tests/paper_spambase.py > result_spambase.txt
 python ./tests/paper_miniboone.py > result_miniboone.txt
 python ./tests/paper_higgs.py > result_higgs.txt
