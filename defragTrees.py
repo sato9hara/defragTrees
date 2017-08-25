@@ -3,21 +3,22 @@
 @author: Satoshi Hara
 
 (Class)
-> DefragModel(modeltype='regression', maxitr=100, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, verbose=0, njobs=1):
+> DefragModel(modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, L=-1, verbose=0, njobs=1)
     modeltype   : 'regression' or 'classification'
     maxitr      : maximum number of iterations for optimization
-    qitr        : for the first qitr iterations, the E-step update is not exact, to avoid overshrinking
+    qitr        : for the first qitr iterations, the E-step update is not exact, to avoid overshrinking (only for FAB)
     tol         : tolerance parameter to stop the iterative optimization
     eps         : (not important) parameter for numerical stabilization
     delta       : (not important) parameter for component truncation (valid only when fittype='FAB')
     kappa       : (not important) tolerance parameter for checking whether eta > 1-kappa or eta < kappa
     seed        : random seed for parameter initialization
     restart     : number of restarts for optimization
+    L           : approximation level for accelerated computation (positive integer or -1=no approximation), smaller the faster
     verbose     : print the optimization process for every 'verbose' iteration when 'verbose >= 1'
-    njobs       : number of jobs parallelized for the parameter search
+    njobs      : the number of jobs to run in parallel for fit
 
 (Methods)
-> DEfragModel.fit(X, y, splitter, K, fittype='FAB', featurename=[])
+> DefragModel.fit(X, y, splitter, K, fittype='FAB', featurename=[])
     X           : numpy array of size num x dim (training data)
     y           : numpy array of size num (training data)
     splitter    : numpy array of pairs (dimension, threshold)
@@ -36,7 +37,6 @@
   [return]
     score       : prediction error
     coverage    : coverage of rules
-    overlap     : average number of overlapping rules
     
 > DefragModel.parseXGBtrees(filename)
     filename    : file name of XGB tree information
@@ -171,14 +171,12 @@ class RuleModel(object):
     
     def evaluate(self, X, y, rnum=-1):
         c1, c2 = self.check(X, rnum=rnum)
-        Z = self.checkZ(X)
-        coll = np.mean(np.sum(Z, axis=1), axis=0)
         z = self.predict(X, rnum=rnum)
         if self.modeltype_ == 'regression':
             err = np.mean((y - z)**2);
         elif self.modeltype_ == 'classification':
             err = np.mean(y != z)
-        return err, np.mean(c1), coll
+        return err, np.mean(c1), np.mean(c2)
     
     def __r2box(self, r, dim):
         vmin = np.array([-np.inf] * dim)
@@ -231,7 +229,7 @@ class RuleModel(object):
 # Defrag Class
 #************************
 class DefragModel(RuleModel):
-    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, verbose=0, njobs=1):
+    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, kappa=1e-6, seed=0, restart=10, L=-1, verbose=0, njobs=1):
         super().__init__(modeltype=modeltype)
         self.maxitr_ = maxitr
         self.qitr_ = qitr
@@ -241,6 +239,7 @@ class DefragModel(RuleModel):
         self.kappa_ = kappa
         self.seed_ = seed
         self.restart_ = restart
+        self.L_ = L
         self.verbose_ = verbose
         self.njobs_ = njobs
         self.defragger_ = []
@@ -254,15 +253,29 @@ class DefragModel(RuleModel):
         self.setfeaturename(featurename)
         self.setdefaultpred(y)
         self.defragger_ = []
+        self.Lidx_ = []
+        self.w_ = splitter.shape[0] / self.L_
         if self.njobs_ == 1:
             for itr in range(self.restart_):
-                defr = self.fit_defragger(X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_)
+                if self.L_ > 0 and splitter.shape[0] > self.L_:
+                    np.random.seed(self.seed_+itr)
+                    self.Lidx_.append(np.random.permutation(splitter.shape[0])[:self.L_])
+                    s = splitter[self.Lidx_[-1], :]
+                else:
+                    s = splitter
+                defr = self.fit_defragger(X, y, s, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_)
                 self.defragger_.append(defr)
         elif self.njobs_ > 1:
             pool = Pool(processes = self.njobs_)
             args = []
             for itr in range(self.restart_):
-                args.append((self.fit_defragger, X, y, splitter, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_))
+                if self.L_ > 0 and splitter.shape[0] > self.L_:
+                    np.random.seed(self.seed_+itr)
+                    self.Lidx_.append(np.random.permutation(splitter.shape[0])[:self.L_])
+                    s = splitter[self.Lidx_[-1], :]
+                else:
+                    s = splitter
+                args.append((self.fit_defragger, X, y, s, K, fittype, self.modeltype_, self.maxitr_, self.qitr_, self.tol_, self.eps_, self.delta_, self.seed_+itr, self.verbose_))
             self.defragger_ = pool.map(argwrapper, args)
             pool.close()
             pool.join()
@@ -273,7 +286,7 @@ class DefragModel(RuleModel):
                 err = self.defragger_[itr].err_
                 self.opt_defragger_ = self.defragger_[itr]
         print('Optimal Model >> Seed %3d, TrainingError = %.2f, K = %d' % (self.opt_defragger_.seed_, self.opt_defragger_.err_, self.opt_defragger_.K_))
-        rule, pred = self.__param2rules(X, y, splitter, self.opt_defragger_.h_, self.opt_defragger_.E_, kappa=self.kappa_, modeltype=self.modeltype_)
+        rule, pred = self.__param2rules(X, y, self.opt_defragger_.splitter_, self.opt_defragger_.h_, self.opt_defragger_.E_, kappa=self.kappa_, modeltype=self.modeltype_)
         self.rule_ = rule
         self.pred_ = pred
         self.weight_ = self.opt_defragger_.A_
@@ -429,13 +442,14 @@ class DefragModel(RuleModel):
 
 
 class Defragger(object):
-    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, seed=0, verbose=0):
+    def __init__(self, modeltype='regression', maxitr=100, qitr=5, tol=1e-6, eps=1e-10, delta=1e-8, w=1, seed=0, verbose=0):
         self.modeltype_ = modeltype
         self.maxitr_ = maxitr
         self.qitr_ = qitr
         self.tol_ = tol
         self.eps_ = eps
         self.delta_ = delta
+        self.w_ = w
         self.seed_ = seed
         self.verbose_ = verbose
     
@@ -456,6 +470,17 @@ class Defragger(object):
         elif fittype == 'FAB':
             self.__fitFAB(X, y, splitter, K, self.seed_)
         self.time_ = time.time() - self.time_
+        pred = []
+        for k in range(self.h_.shape[1]):
+            if self.modeltype_ == 'regression':
+                pred.append(self.h_[0, k])
+            elif self.modeltype_ == 'classification':
+                pred.append(np.argmax(self.h_[:, k]))
+        idx = np.argsort(pred)
+        self.h_ = self.h_[:, idx]
+        self.E_ = self.E_[:, idx]
+        self.A_ = self.A_[idx]
+        self.Q_ = self.Q_[:, idx]
         self.err_ = self.evaluate(X, y)
         print('[Seed %3d] TrainingError = %.2f, K = %d' % (self.seed_, self.err_, self.K_))
         
@@ -509,13 +534,13 @@ class Defragger(object):
         hnew = h.copy()
         Enew = E.copy()
         Anew = A.copy()
-        f = self.__objEM(y, R, Q, h, E, A, eps=self.eps_, modeltype=self.modeltype_)
+        f = self.__objEM(y, R, Q, h, E, A, eps=self.eps_, w=self.w_, modeltype=self.modeltype_)
         for itr in range(self.maxitr_):
-            Qnew = self.__updateQEM(y, R, Q, h, E, A, eps=self.eps_, modeltype=self.modeltype_)
+            Qnew = self.__updateQEM(y, R, Q, h, E, A, eps=self.eps_, w=self.w_, modeltype=self.modeltype_)
             hnew = self.__updateH(y, Qnew, h, modeltype=self.modeltype_)
             Enew = self.__updateE(R, Qnew, E)
             Anew = self.__updateA(Qnew, A)
-            fnew = self.__objEM(y, R, Qnew, hnew, Enew, Anew, eps=self.eps_, modeltype=self.modeltype_)
+            fnew = self.__objEM(y, R, Qnew, hnew, Enew, Anew, eps=self.eps_, w=self.w_, modeltype=self.modeltype_)
             if self.verbose_ > 0:
                 if np.mod(itr, self.verbose_) == 0:
                     print(itr, fnew, fnew - f)
@@ -559,13 +584,13 @@ class Defragger(object):
         Enew = E.copy()
         Anew = A.copy()
         Knew = K.copy()
-        f = self.__objFAB(y, R, Q, h, E, A, K, eps=self.eps_, modeltype=self.modeltype_)
+        f = self.__objFAB(y, R, Q, h, E, A, K, eps=self.eps_, w=self.w_, modeltype=self.modeltype_)
         for itr in range(self.maxitr_):
             Qnew = Q.copy()
             if itr < self.qitr_:
-                Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, modeltype=self.modeltype_, maxitr=2)
+                Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, w=self.w_, modeltype=self.modeltype_, maxitr=2)
             else:
-                Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, modeltype=self.modeltype_, maxitr=10)
+                Qnew[:, K] = self.__updateQFAB(y, R, Q[:, K], h[:, K], E[:, K], A[K], eps=self.eps_, w=self.w_, modeltype=self.modeltype_, maxitr=10)
             Knew = np.where(np.mean(Qnew, axis=0) > self.delta_)[0]
             hnew = h.copy()
             hnew[:, Knew] = self.__updateH(y, Qnew[:, Knew], h[:, Knew], modeltype=self.modeltype_)
@@ -573,7 +598,7 @@ class Defragger(object):
             Enew[:, Knew] = self.__updateE(R, Qnew[:, Knew], E[:, Knew])
             Anew = A.copy()
             Anew[Knew] = self.__updateA(Qnew[:, Knew], A[Knew])
-            fnew = self.__objFAB(y, R, Qnew, hnew, Enew, Anew, Knew, eps=self.eps_, modeltype=self.modeltype_)
+            fnew = self.__objFAB(y, R, Qnew, hnew, Enew, Anew, Knew, eps=self.eps_, w=self.w_, modeltype=self.modeltype_)
             if self.verbose_ > 0:
                 if np.mod(itr, self.verbose_) == 0:
                     print(itr, fnew, fnew - f, Knew)
@@ -597,7 +622,7 @@ class Defragger(object):
         logS += np.log(A[k])
         return logS
         
-    def __getLogP(self, k, y, R, h, E, A, eps=1e-10, modeltype='regression'):
+    def __getLogP(self, k, y, R, h, E, A, eps=1e-10, w=1, modeltype='regression'):
         num = y.size
         logP = np.zeros(num)
         if modeltype == 'regression':
@@ -608,50 +633,50 @@ class Defragger(object):
             for c in range(C):
                 logP[y == c] = np.log(h[c, k])
             t = C
-        logP += R.dot(np.log(np.maximum(eps, E[:, k]))) + (1 - R).dot(np.log(np.maximum(eps, 1 - E[:, k])))
+        logP += w * (R.dot(np.log(np.maximum(eps, E[:, k]))) + (1 - R).dot(np.log(np.maximum(eps, 1 - E[:, k]))))
         logP += np.log(A[k])
         return logP, t
         
-    def __objEM(self, y, R, Q, h, E, A, eps=1e-10, modeltype='regression'):
+    def __objEM(self, y, R, Q, h, E, A, eps=1e-10, w=1, modeltype='regression'):
         K = Q.shape[1]
         f = 0
         for k in range(K):
-            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, modeltype=modeltype)
+            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, w=w, modeltype=modeltype)
             f += Q[:, k].dot(logP)
             f -= Q[:, k].dot(np.log(Q[:, k]))
         return f
     
-    def __objFAB(self, y, R, Q, h, E, A, K, eps=1e-10, modeltype='regression'):
+    def __objFAB(self, y, R, Q, h, E, A, K, eps=1e-10, w=1, modeltype='regression'):
         L = R.shape[1]
         f = 0
         for k in K:
             logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, modeltype=modeltype)
             f += Q[:, k].dot(logP)
             f -= Q[:, k].dot(np.log(Q[:, k]))
-            f -= 0.5 * (1 + t + L) * np.log(1 + np.sum(Q[:, k]))
+            f -= 0.5 * (1 + t + w * L) * np.log(1 + np.sum(Q[:, k]))
         return f
     
-    def __updateQEM(self, y, R, Q, h, E, A, maxitr=1000, tol=1e-6, eps=1e-10, modeltype='regression'):
+    def __updateQEM(self, y, R, Q, h, E, A, maxitr=1000, tol=1e-6, eps=1e-10, w=1, modeltype='regression'):
         K = Q.shape[1]
         F = Q.copy()
         for k in range(K):
-            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, modeltype=modeltype)
+            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, w=w, modeltype=modeltype)
             F[:, k] = logP
         return self.__normExp(F, eps=eps)
     
-    def __updateQFAB(self, y, R, Q, h, E, A, maxitr=1000, tol=1e-6, eps=1e-10, modeltype='regression'):
+    def __updateQFAB(self, y, R, Q, h, E, A, maxitr=1000, tol=1e-6, eps=1e-10, w=1, modeltype='regression'):
         K = Q.shape[1]
         L = R.shape[1]
         F = Q.copy()
         for k in range(K):
-            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, modeltype=modeltype)
+            logP, t = self.__getLogP(k, y, R, h, E, A, eps=eps, w=w, modeltype=modeltype)
             F[:, k] = logP
-        g = self.__objQ(F, Q, t, L)
+        g = self.__objQ(F, Q, t, w * L)
         Qnew = Q.copy()
         for itr in range(maxitr):
-            S = F - 0.5 * (1 + t + L) / (1 + np.sum(Q, axis=0)[np.newaxis, :])
+            S = F - 0.5 * (1 + t + w * L) / (1 + np.sum(Q, axis=0)[np.newaxis, :])
             Qnew = self.__normExp(S, eps=eps)
-            gnew = self.__objQ(F, Qnew, t, L)
+            gnew = self.__objQ(F, Qnew, t, w * L)
             if gnew > g:
                 Q = Qnew.copy()
             if gnew - g < tol:
