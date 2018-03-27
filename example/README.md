@@ -6,6 +6,7 @@
 * Numpy
 * Pandas
 * XGBoost
+* LightGBM
 * Scikit-learn
 * R: randomForest
 
@@ -183,5 +184,71 @@ y = 1 when
 y = 1
 ```
 
+## Example 4 - Interpreting [LightGBM](https://github.com/Microsoft/LightGBM/tree/master/python-package) Model
+In this directory:
 
+```
+python example_data.py
+python example_lgb.py
+```
+
+When interepreting LightGBM model, use ``parseLGBtrees`` of ``DefragModel`` to get ``splitter``:
+
+```python
+gbm.booster_.save_model('lgbmodel.txt') # save LightGBM model as text
+splitter = DefragModel.parseLGBtrees('./lgbmodel.txt') # parse LGB model into the array of (feature index, threshold)
+```
+The result of ``python example_lgb.py`` would be someting like this:
+
+```
+<< defragTrees >>
+----- Evaluated Results -----
+Test Error = 0.095000
+Test Coverage = 1.000000
+Overlap = 0.734000
+
+----- Found Rules -----
+[Rule  1]
+y = 0 when
+         x_1 < 0.359481
+
+[Rule  2]
+y = 0 when
+         x_2 >= 0.493952
+
+[Rule  3]
+y = 0 when
+         x_2 >= 0.493952
+
+[Rule  4]
+y = 0 when
+         x_1 >= 0.359481
+
+[Rule  5]
+y = 0 when
+         x_1 >= 0.341755
+         x_2 >= 0.493952
+
+[Rule  6]
+y = 0 when
+         x_1 >= 0.499749
+         x_2 >= 0.493952
+
+[Rule  7]
+y = 1 when
+         x_1 < 0.359481
+         x_2 >= 0.493952
+
+[Rule  8]
+y = 1 when
+         x_1 >= 0.359481
+         x_2 >= 0.493952
+
+[Rule  9]
+y = 1 when
+         x_1 >= 0.499749
+
+[Otherwise]
+y = 1
+```
 

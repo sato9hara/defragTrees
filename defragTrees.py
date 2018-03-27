@@ -369,6 +369,26 @@ class DefragModel(RuleModel):
     # Static Methods
     #************************
     @staticmethod
+    def parseLGBtrees(filename):
+        splitter = np.zeros((1, 2))
+        f = open(filename)
+        line = f.readline()
+        flg = False
+        while line:
+            if 'Tree=' in line:
+                flg = True
+            if flg:
+                if 'split_feature=' in line:
+                    idx = np.array([int(s) for s in line.split('=')[1].split(' ')])
+                if 'threshold=' in line:
+                    val = np.array([float(v) for v in line.split('=')[1].split(' ')])
+                    flg = False
+                    splitter = np.r_[splitter, np.c_[idx, val]]
+            line = f.readline()
+        f.close()
+        return DefragModel.__uniqueRows(splitter[1:, :])
+    
+    @staticmethod
     def parseXGBtrees(filename):
         splitter = np.zeros((1, 2))
         f = open(filename)
