@@ -1,7 +1,7 @@
 # defragTrees
 Python code for tree ensemble interpretation proposed in the following paper.
 
-* S. Hara, K. Hayashi, [Making Tree Ensembles Interpretable: A Bayesian Model Selection Approach](http://arxiv.org/abs/1606.09066), arXiv:1606.09066, 2016.
+* S. Hara, K. Hayashi, [Making Tree Ensembles Interpretable: A Bayesian Model Selection Approach](http://proceedings.mlr.press/v84/hara18a.html). In Proceedings of the 21th International Conference on Artificial Intelligence and Statistics (AISTATS'18), pages 77--85, 2018.
 
 ## Requirements
 To use defragTrees:
