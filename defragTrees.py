@@ -184,9 +184,9 @@ class RuleModel(object):
         box = np.c_[vmin, vmax].T
         for rr in r:
             if rr[1] == 0:
-                box[1, rr[0]-1] = np.minimum(box[1, rr[0]-1], rr[2])
+                box[1, int(rr[0])-1] = np.minimum(box[1, int(rr[0])-1], rr[2])
             else:
-                box[0, rr[0]-1] = np.maximum(box[0, rr[0]-1], rr[2])
+                box[0, int(rr[0])-1] = np.maximum(box[0, int(rr[0])-1], rr[2])
         return box, vmin, vmax
     
     def setfeaturename(self, featurename):
