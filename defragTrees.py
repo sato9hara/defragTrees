@@ -511,7 +511,7 @@ class Defragger(object):
         logS = np.zeros((num, K))
         for k in range(K):
             logS[:, k] = self.__getLogS(k, R, self.E_, self.A_, eps=self.eps_)
-        P = self.__normExp(logS)
+        P = self.__normExp(logS, eps=self.eps_)
         if self.modeltype_ == "regression":
             y = self.h_[0, :]
         elif self.modeltype_ == "classification":
