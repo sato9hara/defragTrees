@@ -89,11 +89,11 @@ class RuleModel(object):
                 if box[0, d] == vmin[d] and box[1, d] == vmax[d]:
                     pass
                 elif box[0, d] > vmin[d] and box[1, d] < vmax[d]:
-                    s += '\t %f <= %s < %f\n' % (box[0, d], self.featurename_[d], box[1, d])
+                    s += '\t %f < %s <= %f\n' % (box[0, d], self.featurename_[d], box[1, d])
                 elif box[0, d] == vmin[d]:
-                    s += '\t %s < %f\n' % (self.featurename_[d], box[1, d])
+                    s += '\t %s <= %f\n' % (self.featurename_[d], box[1, d])
                 elif box[1, d] == vmax[d]:
-                    s += '\t %s >= %f\n' % (self.featurename_[d], box[0, d])
+                    s += '\t %s > %f\n' % (self.featurename_[d], box[0, d])
             s += '\n'
         s += '[Otherwise]\n'
         if self.modeltype_ == 'regression':
